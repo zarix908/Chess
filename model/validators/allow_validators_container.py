@@ -1,7 +1,8 @@
 import math
 
-from abstract_validators_container import *
 from enums import PieceType
+from model.map import Map
+from model.validators.abstract_validators_container import *
 
 
 class AllowValidatorsContainer(AbstractValidatorsContainer):
@@ -44,4 +45,20 @@ class AllowValidatorsContainer(AbstractValidatorsContainer):
 
     @validator
     def pawn_capture_other_pawn_on_aisle(self):
-        
+        if self._previous_map is None or self._move_vector.x == 0:
+            return False
+
+        last_move_vector = Map.get_last_move_vector(self._previous_map,
+                                                    self._current_map)
+        enemy_piece = self._current_map.get(last_move_vector.end_cell)
+
+        if enemy_piece.type is not \
+                PieceType.PAWN or last_move_vector.length_in_cells != 2:
+            return False
+
+        if last_move_vector.end_cell == self._move_vector\
+                .horizontal_ort.end_cell:
+            self.notify_game_remove_piece(last_move_vector.end_cell)
+            return True
+
+        return False

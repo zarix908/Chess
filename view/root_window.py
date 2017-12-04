@@ -2,10 +2,10 @@ from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle, Line
 from kivy.uix.widget import Widget
+from model.map import Map
+from model.vector import Vector
 
-from cell import Cell
-from map import Map
-from vector import Vector
+from model.cell import Cell
 
 
 class RootWindow(Widget):

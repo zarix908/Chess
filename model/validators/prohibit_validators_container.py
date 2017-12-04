@@ -1,9 +1,11 @@
 import numpy as np
+from model.piece import Piece
+from copy import copy
 
-from abstract_validators_container import *
 from enums import PieceType, PieceColor
-from piece import Piece
-from ray import Ray
+from model.ray import Ray
+from model.validators.abstract_validators_container import *
+from model.vector import Vector
 
 
 class ProhibitValidatorsContainer(AbstractValidatorsContainer):
@@ -66,3 +68,17 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
         target = self._current_map.get(target_cell)
 
         return self._move_vector.x == 0 and target is not None
+
+    @validator
+    def capture_self_color_piece(self):
+        piece = self._active_piece
+        target = self._current_map.get(self._move_vector.end_cell)
+
+        if target is None:
+            return False
+
+        return piece.color == target.color
+
+    @validator
+    def self_king_will_check_after_move(self):
+        return False

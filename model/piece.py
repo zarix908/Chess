@@ -16,3 +16,9 @@ class Piece:
     @property
     def asset_path(self):
         return self.__asset_path
+
+    def __eq__(self, other):
+        if not isinstance(other, Piece):
+            return False
+
+        return self.__type == other.__type and self.__color == other.__color

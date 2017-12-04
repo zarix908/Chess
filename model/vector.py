@@ -1,7 +1,9 @@
 import math
-import numpy as np
-from cell import Cell
 from copy import copy
+
+import numpy as np
+
+from model.cell import Cell
 
 
 class Vector:
@@ -25,11 +27,11 @@ class Vector:
 
     @property
     def start_cell(self):
-        return self.__start_cell
+        return copy(self.__start_cell)
 
     @property
     def end_cell(self):
-        return self.__end_cell
+        return copy(self.__end_cell)
 
     @property
     def x(self):
@@ -51,6 +53,10 @@ class Vector:
     def ort_in_cells(self):
         return Vector(copy(self.__start_cell), np.sign(self.x),
                       np.sign(self.y))
+
+    @property
+    def horizontal_ort(self):
+        return Vector(copy(self.__start_cell), np.sign(self.x), 0)
 
     def contain(self, other):
         return self.co_directed(other) and self.length >= other.length

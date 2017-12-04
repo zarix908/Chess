@@ -6,8 +6,8 @@ from controller import Controller
 
 Config.set('graphics', 'resizable', False)
 
-from game import Game
-from root_window import RootWindow
+from model.game import Game
+from view.root_window import RootWindow
 
 
 class Chess(App):

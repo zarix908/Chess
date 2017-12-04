@@ -12,7 +12,7 @@ class Cell:
         return self.__y
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        return self.__x == other.__x and self.__y == other.__y
 
     def __copy__(self):
         return Cell(self.__x, self.__y)

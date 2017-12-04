@@ -1,6 +1,6 @@
 from copy import copy
 
-from map import Map
+from model.map import Map
 
 
 class Ray:
@@ -22,5 +22,6 @@ class Ray:
         target_cell = vector.end_cell
         return self.__map.get(target_cell)
 
-    def map_contain_vector(self, vector):
+    @staticmethod
+    def map_contain_vector(vector):
         return max(abs(vector.x), abs(vector.y)) < Map.SIZE

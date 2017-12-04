@@ -1,7 +1,6 @@
 import inspect
 
 
-
 def validator(func):
     def validator_decorator(*args, **kwargs):
         return func(*args, **kwargs)
@@ -18,6 +17,8 @@ class AbstractValidatorsContainer:
         self._active_piece = self._current_map.get(
             self._move_vector.start_cell)
 
+        self.on_remove_piece_handler = None
+
     def is_valid(self):
         raise NotImplementedError("method is_valid() not declared in subclass")
 
@@ -33,3 +34,6 @@ class AbstractValidatorsContainer:
         for member in class_members:
             if member.__doc__ == "validator":
                 yield member
+
+    def notify_game_remove_piece(self, piece_cell):
+        self.on_remove_piece_handler(piece_cell)
