@@ -25,3 +25,16 @@ class PieceColor(Enum):
 
     def __int__(self):
         return self._value_
+
+
+class ValidatorTypes:
+    TRAJECTORY = "trajectory"
+    APPENDIX_RULES = "appendix_rules"
+
+    @staticmethod
+    def get_iterable_types():
+        yield ValidatorTypes.TRAJECTORY
+        yield ValidatorTypes.APPENDIX_RULES
+
+        raise StopIteration
+

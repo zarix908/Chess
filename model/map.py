@@ -37,7 +37,10 @@ class Map:
             self.__map[x][y] = Piece(PieceType.PAWN, color)
 
     def get(self, cell):
-        if cell is None or max(abs(cell.x), abs(cell.y)) > Map.SIZE:
+        if cell is None:
+            return None
+
+        if not (0 <= cell.x < Map.SIZE and 0 <= cell.y < Map.SIZE):
             return None
 
         piece = self.__map[cell.x][cell.y]
