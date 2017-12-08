@@ -95,6 +95,17 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
 
     @validator(ValidatorTypes.APPENDIX_RULES)
     def self_king_will_check_after_move(self):
+        new_map = copy(self._current_map)
+        new_map.drag(self._move_vector)
+
+        return self.king_is_attacked_in_position(new_map,
+                                                 self._active_piece.color)
+
+    @validator(ValidatorTypes.APPENDIX_RULES)
+    def current_color_move_satisfies(self):
+        return self._active_piece.color != self._current_move_color
+
+    def king_is_attacked_in_position(self, position, king_color):
         for x in range(Map.SIZE):
             for y in range(Map.SIZE):
                 cell = Cell(x, y)
@@ -103,21 +114,22 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
                 if piece is None:
                     continue
 
-                if self._active_piece.color == piece.color:
+                if king_color == piece.color:
                     continue
 
                 king_cell = self.find_self_color_king()
 
-                new_map = copy(self._current_map)
-                new_map.drag(self._move_vector)
+                if self._active_piece.type is PieceType.KING:
+                    king_cell = self._move_vector.end_cell
 
-                if self._valid_trajectory(new_map, Vector(cell, king_cell)):
+                if self._valid_trajectory(position, Vector(cell, king_cell)):
                     return True
 
         return False
 
     def _valid_trajectory(self, new_map, next_move_vector):
-        arguments = [new_map, self._current_map, next_move_vector]
+        arguments = [new_map, self._current_map, next_move_vector,
+                     self._current_move_color]
 
         allow_container = AllowValidatorsContainer(*arguments)
         prohibit_container = ProhibitValidatorsContainer(*arguments)
@@ -127,8 +139,10 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
         prohibit_container \
             .on_remove_piece_handler = self.on_remove_piece_handler
 
-        return allow_container.is_valid_trajectory() and prohibit_container \
+        result = allow_container.is_valid_trajectory() and prohibit_container \
             .is_valid_trajectory()
+
+        return result
 
     def find_self_color_king(self):
         for x in range(Map.SIZE):
@@ -142,3 +156,5 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
                 if piece.type is PieceType.KING \
                         and piece.color == self._active_piece.color:
                     return cell
+
+        return True

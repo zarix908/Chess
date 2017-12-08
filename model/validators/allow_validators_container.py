@@ -23,6 +23,8 @@ class AllowValidatorsContainer(AbstractValidatorsContainer):
             if allow_validator():
                 return True
 
+        return False
+
     @validator(ValidatorTypes.TRAJECTORY)
     def vertical_horizontal_move(self):
         x = self._move_vector.x

@@ -11,7 +11,8 @@ class ValidatorsContainer(AbstractValidatorsContainer):
         super().__init__(*args, **kwargs)
 
     def is_valid(self):
-        arguments = [self._current_map, self._previous_map, self._move_vector]
+        arguments = [self._current_map, self._previous_map, self._move_vector,
+                     self._current_move_color]
 
         allow_container = AllowValidatorsContainer(*arguments)
         prohibit_container = ProhibitValidatorsContainer(*arguments)

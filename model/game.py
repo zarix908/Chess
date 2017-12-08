@@ -1,5 +1,6 @@
 from copy import copy
 
+from enums import PieceColor
 from model.map import Map
 from model.validators.validators_container import ValidatorsContainer
 
@@ -8,6 +9,7 @@ class Game:
     def __init__(self):
         self.__map = Map(is_auto_init=True)
         self.__map_stack = []
+        self.__color_current_move = PieceColor.WHITE
 
     def try_make_move(self, move_vector):
         piece = self.__map.get(move_vector.start_cell)
@@ -16,12 +18,15 @@ class Game:
 
         validator_container = ValidatorsContainer(self.map,
                                                   self.get_map_stack(),
-                                                  move_vector)
+                                                  move_vector,
+                                                  self.__color_current_move)
 
-        validator_container\
+        validator_container \
             .on_remove_piece_handler = self.on_remove_piece_handler
 
         if validator_container.is_valid():
+            self.__color_current_move = PieceColor.invert(
+                self.__color_current_move)
             self.__map_stack.append(copy(self.__map))
             self.__map.drag(move_vector)
             return True

@@ -68,8 +68,8 @@ class Map:
 
     def __str__(self):
         result = ""
-        for x in range(Map.SIZE):
-            for y in range(Map.SIZE):
+        for y in range(Map.SIZE):
+            for x in range(Map.SIZE):
                 piece = self.__map[x][y]
 
                 if piece is None:

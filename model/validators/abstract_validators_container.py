@@ -15,14 +15,17 @@ def validator(validator_type):
 
 
 class AbstractValidatorsContainer:
-    def __init__(self, current_map, previous_map, move_vector):
+    def __init__(self, current_map, previous_map, move_vector,
+                 current_move_color):
         self._current_map = current_map
         self._previous_map = previous_map
         self._move_vector = move_vector
         self._active_piece = self._current_map.get(
             self._move_vector.start_cell)
+        self._current_move_color = current_move_color
 
         self.on_remove_piece_handler = None
+        self.on_mat_handler = None
 
     def is_valid(self):
         raise NotImplementedError("method is_valid() not declared in subclass")
@@ -47,3 +50,6 @@ class AbstractValidatorsContainer:
 
     def notify_game_remove_piece(self, piece_cell):
         self.on_remove_piece_handler(piece_cell)
+
+    def notify_game_mat(self, loser_color):
+        self.on_mat_handler(loser_color)
