@@ -26,6 +26,14 @@ class GameTest(unittest.TestCase):
         self.base_test(game, 5, 7, 4, 6, True)
         self.base_test(game, 4, 3, 4, 2, False)
 
+        game = Game()
+        self.base_test(game, 0, 1, 0, 3, True)
+        self.base_test(game, 6, 7, 5, 5, True)
+        self.base_test(game, 0, 3, 0, 4, True)
+        self.base_test(game, 1, 6, 1, 4, True)
+        self.base_test(game, 0, 4, 1, 5, True)
+        self.base_test(game, 2, 6, 1, 5, True)
+
     def base_test(self, game, x1, y1, x2, y2, result):
         self.__number += 1
 
