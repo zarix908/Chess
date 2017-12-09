@@ -19,6 +19,6 @@ class ValidatorsContainer(AbstractValidatorsContainer):
 
         allow_container.on_remove_piece_handler = self.on_remove_piece_handler
         prohibit_container\
-            .on_remove_piece_handler = self.on_remove_piece_handler
+            .on_check_enemy_king_handler = self.on_check_enemy_king_handler
 
         return allow_container.is_valid() and prohibit_container.is_valid()

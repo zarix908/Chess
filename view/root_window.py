@@ -1,6 +1,9 @@
 from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle, Line
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
 from model.map import Map
 from model.vector import Vector

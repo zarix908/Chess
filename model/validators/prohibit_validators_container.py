@@ -109,15 +109,12 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
         for x in range(Map.SIZE):
             for y in range(Map.SIZE):
                 cell = Cell(x, y)
-                piece = self._current_map.get(cell)
+                piece = position.get(cell)
 
-                if piece is None:
+                if piece is None or king_color == piece.color:
                     continue
 
-                if king_color == piece.color:
-                    continue
-
-                king_cell = self.find_self_color_king()
+                king_cell = self.find_king_by_color(self._active_piece.color)
 
                 if self._active_piece.type is PieceType.KING:
                     king_cell = self._move_vector.end_cell
@@ -134,17 +131,10 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
         allow_container = AllowValidatorsContainer(*arguments)
         prohibit_container = ProhibitValidatorsContainer(*arguments)
 
-        allow_container \
-            .on_remove_piece_handler = self.on_remove_piece_handler
-        prohibit_container \
-            .on_remove_piece_handler = self.on_remove_piece_handler
-
-        result = allow_container.is_valid_trajectory() and prohibit_container \
+        return allow_container.is_valid_trajectory() and prohibit_container \
             .is_valid_trajectory()
 
-        return result
-
-    def find_self_color_king(self):
+    def find_king_by_color(self, color):
         for x in range(Map.SIZE):
             for y in range(Map.SIZE):
                 cell = Cell(x, y)
@@ -153,8 +143,5 @@ class ProhibitValidatorsContainer(AbstractValidatorsContainer):
                 if piece is None:
                     continue
 
-                if piece.type is PieceType.KING \
-                        and piece.color == self._active_piece.color:
+                if piece.type is PieceType.KING and piece.color == color:
                     return cell
-
-        return True

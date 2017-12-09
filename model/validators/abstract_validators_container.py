@@ -25,7 +25,7 @@ class AbstractValidatorsContainer:
         self._current_move_color = current_move_color
 
         self.on_remove_piece_handler = None
-        self.on_mat_handler = None
+        self.on_check_enemy_king_handler = None
 
     def is_valid(self):
         raise NotImplementedError("method is_valid() not declared in subclass")
@@ -51,5 +51,5 @@ class AbstractValidatorsContainer:
     def notify_game_remove_piece(self, piece_cell):
         self.on_remove_piece_handler(piece_cell)
 
-    def notify_game_mat(self, loser_color):
-        self.on_mat_handler(loser_color)
+    def notify_game_check_enemy_king(self):
+        self.on_check_enemy_king_handler()
