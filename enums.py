@@ -32,12 +32,5 @@ class PieceColor(Enum):
 
 
 class ValidatorTypes:
-    TRAJECTORY = "trajectory"
-    APPENDIX_RULES = "appendix_rules"
-
-    @staticmethod
-    def get_iterable_types():
-        yield ValidatorTypes.TRAJECTORY
-        yield ValidatorTypes.APPENDIX_RULES
-
-        raise StopIteration
+    ALLOW = "allow_validator"
+    PROHIBIT = "prohibit_validator"

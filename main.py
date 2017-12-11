@@ -14,7 +14,7 @@ class Chess(App):
     def build(self):
         game = Game()
         root_window = RootWindow(game, Controller(game))
-        Clock.schedule_interval(lambda delta_time: root_window.update(), 0.3)
+        Clock.schedule_interval(lambda delta_time: root_window.update(), 0.03)
         return root_window
 
 

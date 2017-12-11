@@ -22,3 +22,6 @@ class Piece:
             return False
 
         return self.__type == other.__type and self.__color == other.__color
+
+    def __copy__(self):
+        return Piece(self.__type, self.__color)

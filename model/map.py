@@ -66,21 +66,6 @@ class Map:
 
         return new_map
 
-    def __str__(self):
-        result = ""
-        for y in range(Map.SIZE):
-            for x in range(Map.SIZE):
-                piece = self.__map[x][y]
-
-                if piece is None:
-                    result += "##"
-                else:
-                    result += str(int(piece.color)) + str(int(piece.type))
-
-            result += "\n"
-
-        return result
-
     @staticmethod
     def get_last_move_vector(previous_map, current_map):
         if not (isinstance(previous_map, Map) and isinstance(
@@ -104,3 +89,18 @@ class Map:
             return None
 
         return Vector(begin_cell, end_cell)
+
+    def __str__(self):
+        result = ""
+        for y in range(Map.SIZE):
+            for x in range(Map.SIZE):
+                piece = self.__map[x][y]
+
+                if piece is None:
+                    result += "##"
+                else:
+                    result += str(int(piece.color)) + str(int(piece.type))
+
+            result += "\n"
+
+        return result

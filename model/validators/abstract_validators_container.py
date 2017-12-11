@@ -15,31 +15,32 @@ def validator(validator_type):
 
 
 class AbstractValidatorsContainer:
-    def __init__(self, current_map, previous_map, move_vector,
-                 current_move_color):
+    def __init__(self, current_map, move_vector):
         self._current_map = current_map
-        self._previous_map = previous_map
         self._move_vector = move_vector
         self._active_piece = self._current_map.get(
             self._move_vector.start_cell)
-        self._current_move_color = current_move_color
 
         self.on_remove_piece_handler = None
-        self.on_check_enemy_king_handler = None
 
     def is_valid(self):
-        raise NotImplementedError("method is_valid() not declared in subclass")
+        return self.allow_valid() and self.prohibit_valid()
 
-    def move_validator(self, apply_for_piece_types, condition):
-        if self._active_piece.type not in apply_for_piece_types:
-            return False
+    def allow_valid(self):
+        for allow_validator in self.get_validators_by_type(
+                ValidatorTypes.ALLOW):
+            if allow_validator():
+                return True
 
-        return condition()
+        return False
 
-    def get_validators(self):
-        for validator_type in ValidatorTypes.get_iterable_types():
-            for i in self.get_validators_by_type(validator_type):
-                yield i
+    def prohibit_valid(self):
+        for prohibit_validator in self.get_validators_by_type(
+                ValidatorTypes.PROHIBIT):
+            if prohibit_validator():
+                return False
+
+        return True
 
     def get_validators_by_type(self, validators_type):
         class_members = map(lambda el: el[1], inspect.getmembers(self))
@@ -50,6 +51,3 @@ class AbstractValidatorsContainer:
 
     def notify_game_remove_piece(self, piece_cell):
         self.on_remove_piece_handler(piece_cell)
-
-    def notify_game_check_enemy_king(self):
-        self.on_check_enemy_king_handler()

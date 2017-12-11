@@ -35,8 +35,6 @@ class GameTest(unittest.TestCase):
         self.base_test(game, 2, 6, 1, 5, True)
 
     def base_test(self, game, x1, y1, x2, y2, result):
-        self.__number += 1
-
         start_cell = Cell(x1, y1)
         end_cell = Cell(x2, y2)
 

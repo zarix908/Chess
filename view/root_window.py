@@ -25,6 +25,7 @@ class RootWindow(Widget):
         self.__allotted_cell = None
 
     def update(self):
+
         with self.canvas:
             self.canvas.clear()
             Rectangle(pos=(0, 0), size=self.size,
@@ -76,3 +77,10 @@ class RootWindow(Widget):
         move_made = self.__controller.send_data(
             Vector(self.__allotted_cell, clicked_cell))
         self.__allotted_cell = None if move_made else clicked_cell
+
+    def show_popups(self):
+        if self.__game.king_is_checked:
+            ok_button = Button(text="OK")
+            popup = Popup(content=ok_button, size=(200, 200))
+            ok_button.bind(on_press=popup.dismiss)
+            popup.open()
