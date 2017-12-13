@@ -57,10 +57,11 @@ class Map:
             start_cell.y]
         self.__map[start_cell.x][start_cell.y] = None
 
-        if piece is PieceType.KING:
+        if piece.type is PieceType.KING:
             self.__moved_kings.add(piece)
+            a=0
 
-        if piece is PieceType.ROOK:
+        if piece.type is PieceType.ROOK:
             self.__moved_rooks.add(piece)
 
     def remove(self, cell):
