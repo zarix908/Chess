@@ -34,6 +34,16 @@ class GameTest(unittest.TestCase):
         self.base_test(game, 0, 4, 1, 5, True)
         self.base_test(game, 2, 6, 1, 5, True)
 
+        game = Game()
+        self.base_test(game, 4, 1, 4, 3, True)
+        self.base_test(game, 4, 6, 4, 4, True)
+        self.base_test(game, 3, 0, 7, 4, True)
+        self.base_test(game, 0, 6, 0, 5, True)
+        self.base_test(game, 5, 0, 2, 3, True)
+        self.base_test(game, 0, 5, 0, 4, True)
+        self.base_test(game, 7, 4, 5, 6, True)
+        self.assertEqual(game.king_is_checked, True)
+
     def base_test(self, game, x1, y1, x2, y2, result):
         start_cell = Cell(x1, y1)
         end_cell = Cell(x2, y2)

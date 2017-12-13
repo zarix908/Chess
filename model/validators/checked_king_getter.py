@@ -1,6 +1,7 @@
-from enums import PieceType
+from enums import PieceType, PieceColor
 from model.cell import Cell
 from model.map import Map
+from model.piece import Piece
 
 from model.validators.trajectory_validators_container import \
     TrajectoryValidatorsContainer
@@ -31,10 +32,13 @@ class CheckedKingGetter:
                                              next_move_vector).is_valid()
 
     def __get_kings_cells(self):
-        for x in range(Map.SIZE):
+        for color in PieceColor:
+            sought_piece = Piece(PieceType.KING, color)
+            yield Map.find(self.__current_map, sought_piece)
+        """for x in range(Map.SIZE):
             for y in range(Map.SIZE):
                 cell = Cell(x, y)
                 piece = self.__current_map.get(cell)
 
                 if piece is not None and piece.type is PieceType.KING:
-                    yield cell
+                    yield cell"""
