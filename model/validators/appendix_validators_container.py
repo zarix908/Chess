@@ -1,8 +1,9 @@
-import math
-
-from enums import PieceType, ValidatorTypes
+from enums import PieceType, PieceColor
+from model.cell import Cell
 from model.map import Map
 from model.validators.abstract_validators_container import *
+from model.validators.cell_bit_determinant import CellBitDeterminant
+from model.vector import Vector
 
 
 class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
@@ -31,6 +32,39 @@ class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
             return True
 
         return False
+
+    @validator(ValidatorTypes.ALLOW)
+    def castling(self):
+        piece = self._active_piece
+        if piece.type is not PieceType.KING or self._current_map.king_is_moved(
+                piece):
+            return False
+
+        y = 0 if piece.color == PieceColor.WHITE else 7
+        start_x = 4
+        end_x = 6
+        start_cell = Cell(start_x, y)
+        end_cell = Cell(end_x, y)
+        vector = Vector(start_cell, end_cell)
+
+        if vector != self._move_vector:
+            return False
+
+        rook = self._current_map.get(Cell(end_x + 1, y))
+        if rook is None or rook.type is not PieceType.ROOK:
+            return False
+        if self._current_map.rook_is_moved(rook):
+            return False
+
+        y = 0 if piece.color == PieceColor.WHITE else 7
+        for x in range(4, 8):
+            cell_bit_determinant = CellBitDeterminant(self._current_map,
+                                                      Cell(x, y))
+
+            if cell_bit_determinant.is_bit(piece.color):
+                return False
+
+        return True
 
     @validator(ValidatorTypes.PROHIBIT)
     def current_color_move_satisfies(self):

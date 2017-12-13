@@ -71,3 +71,7 @@ class Vector:
 
     def __copy__(self):
         return Vector(copy(self.__start_cell), copy(self.__end_cell))
+
+    def __eq__(self, other):
+        return self.__start_cell == other.__start_cell\
+               and self.__end_cell == other.__end_cell

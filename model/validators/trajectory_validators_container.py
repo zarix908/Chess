@@ -11,12 +11,6 @@ class TrajectoryValidatorsContainer(AbstractValidatorsContainer):
         super().__init__(current_map, move_vector)
 
     @validator(ValidatorTypes.PROHIBIT)
-    def king_limit_move_length(self):
-        length_in_cells = self._move_vector.length_in_cells
-        return self.move_validator([PieceType.KING],
-                                   lambda: length_in_cells != 1)
-
-    @validator(ValidatorTypes.PROHIBIT)
     def pawn_limit_move_length(self):
         piece = self._active_piece
         if piece.type is not PieceType.PAWN:
@@ -76,14 +70,18 @@ class TrajectoryValidatorsContainer(AbstractValidatorsContainer):
         y = self._move_vector.y
         length_in_cells = self._move_vector.length_in_cells
         return self.move_validator(
-            [PieceType.ROOK, PieceType.QUEEN, PieceType.KING, PieceType.PAWN],
+            [PieceType.ROOK, PieceType.QUEEN, PieceType.PAWN],
             lambda: (x == 0 or y == 0) and length_in_cells != 0)
 
     @validator(ValidatorTypes.ALLOW)
     def diagonal_move(self):
         return self.move_validator(
-            [PieceType.BISHOP, PieceType.QUEEN, PieceType.KING],
+            [PieceType.BISHOP, PieceType.QUEEN],
             lambda: abs(self._move_vector.x) == abs(self._move_vector.y))
+
+    @validator(ValidatorTypes.ALLOW)
+    def king_moving(self):
+        return self._move_vector.length_in_cells == 1
 
     @validator(ValidatorTypes.ALLOW)
     def knight_move(self):
