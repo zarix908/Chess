@@ -81,6 +81,8 @@ class TrajectoryValidatorsContainer(AbstractValidatorsContainer):
 
     @validator(ValidatorTypes.ALLOW)
     def king_moving(self):
+        if self._active_piece.type != PieceType.KING:
+            return False
         return self._move_vector.length_in_cells == 1
 
     @validator(ValidatorTypes.ALLOW)
