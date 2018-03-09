@@ -16,14 +16,11 @@ class Map:
         if is_auto_init:
             self.set_initial_state()
 
-        self.__moved_kings = set()
-        self.__moved_rooks = set()
-
     def set_initial_state(self):
-        self.__add_pieces(PieceColor.WHITE)
-        self.__add_pieces(PieceColor.BLACK)
+        self.add_pieces(PieceColor.WHITE)
+        self.add_pieces(PieceColor.BLACK)
 
-    def __add_pieces(self, color):
+    def add_pieces(self, color):
         y = 0 if color is PieceColor.WHITE else Map.SIZE - 1
         x = 0
 
@@ -53,25 +50,12 @@ class Map:
         start_cell = move_vector.start_cell
         end_cell = move_vector.end_cell
 
-        piece = self.__map[end_cell.x][end_cell.y] = self.__map[start_cell.x][
+        self.__map[end_cell.x][end_cell.y] = self.__map[start_cell.x][
             start_cell.y]
         self.__map[start_cell.x][start_cell.y] = None
 
-        if piece.type is PieceType.KING:
-            self.__moved_kings.add(piece)
-            a=0
-
-        if piece.type is PieceType.ROOK:
-            self.__moved_rooks.add(piece)
-
     def remove(self, cell):
         self.__map[cell.x][cell.y] = None
-
-    def king_is_moved(self, king):
-        return king in self.__moved_kings
-
-    def rook_is_moved(self, rook):
-        return rook in self.__moved_rooks
 
     def __copy__(self):
         new_map = Map(is_auto_init=False)

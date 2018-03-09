@@ -37,11 +37,11 @@ class RootWindow(Widget):
 
     def undo_map(self, arg):
         if arg.last_touch.device == "mouse":
-            self.game.undo_map()
+            self.game.undo()
 
     def redo_map(self, arg):
         if arg.last_touch.device == "mouse":
-            self.game.redo_map()
+            self.game.redo()
 
     def on_undo_map_available(self, is_available):
         self.undo_map_button.disabled = not is_available

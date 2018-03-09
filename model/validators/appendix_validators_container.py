@@ -8,8 +8,9 @@ from model.vector import Vector
 
 class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
     def __init__(self, current_map, previous_map, move_vector,
-                 color_current_move):
+                 color_current_move, moved_pieces):
         super().__init__(current_map, move_vector)
+        self.__moved_pieces = moved_pieces
         self.__previous_map = previous_map
         self.__color_current_move = color_current_move
 
@@ -36,8 +37,7 @@ class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
     @validator(ValidatorTypes.ALLOW)
     def castling(self):
         piece = self._active_piece
-        if piece.type is not PieceType.KING or self._current_map.king_is_moved(
-                piece):
+        if piece.type is not PieceType.KING or piece in self.__moved_pieces:
             return False
 
         y = 0 if piece.color == PieceColor.WHITE else 7
@@ -53,7 +53,7 @@ class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
         rook = self._current_map.get(Cell(end_x + 1, y))
         if rook is None or rook.type is not PieceType.ROOK:
             return False
-        if self._current_map.rook_is_moved(rook):
+        if rook in self.__moved_pieces:
             return False
 
         y = 0 if piece.color == PieceColor.WHITE else 7
@@ -64,6 +64,7 @@ class AppendixRulesValidatorsContainer(AbstractValidatorsContainer):
             if cell_bit_determinant.is_bit(piece.color):
                 return False
 
+        self.notify_game_castling(piece.color, is_short=True)
         return True
 
     @validator(ValidatorTypes.PROHIBIT)

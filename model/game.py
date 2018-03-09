@@ -1,10 +1,12 @@
 from copy import copy
 
 from enums import PieceColor
+from model.cell import Cell
 from model.map import Map
 from model.map_cvs import MapCVS
 from model.validators.checked_king_getter import CheckedKingGetter
 from model.validators.move_validator import MoveValidator
+from model.vector import Vector
 
 
 class Game:
@@ -12,11 +14,15 @@ class Game:
         self.__map = Map(is_auto_init=True)
         self.__color_current_move = PieceColor.WHITE
         self.__checked_king = CheckedKingGetter(self.map).get_checked_king()
-        self.__game_is_finished = False
+        self.__is_finished = False
         self.__map_cvs = MapCVS()
         self.__map_cvs.add_map(self.map)
+        self.__moved_pieces = []
 
     def try_make_move(self, move_vector):
+        if self.__is_finished:
+            return
+
         piece = self.__map.get(move_vector.start_cell)
         if piece is None:
             return False
@@ -26,20 +32,22 @@ class Game:
         move_validator = MoveValidator(self.map,
                                        self.__map_cvs.previous_map(),
                                        move_vector,
-                                       self.__color_current_move)
+                                       self.__color_current_move,
+                                       self.__moved_pieces)
 
         move_validator.on_remove_piece_handler = self.on_remove_piece_handler
+        move_validator.on_castling_handler = self.on_castling_handler
 
         if move_validator.is_valid():
-            self.__checked_king = self.identify_checked_king(self.map,
+            self.__checked_king = Game.identify_checked_king(self.map,
                                                              move_vector)
             if not self.self_color_king_checked_after_move():
+                self.__moved_pieces.append(piece)
                 self.invert_color_current_move()
                 self.__map.drag(move_vector)
                 self.__map_cvs.add_map(self.map)
+                # self.detect_end_game()
                 return True
-
-        # self.detect_end_game()
 
         return False
 
@@ -53,7 +61,7 @@ class Game:
 
     @property
     def is_finished(self):
-        return self.__game_is_finished
+        return self.__is_finished
 
     @property
     def undo_map_available(self):
@@ -70,7 +78,8 @@ class Game:
         self.__color_current_move = PieceColor.invert(
             self.__color_current_move)
 
-    def identify_checked_king(self, map, move_vector):
+    @staticmethod
+    def identify_checked_king(map, move_vector):
         map.drag(move_vector)
         return CheckedKingGetter(map).get_checked_king()
 
@@ -80,10 +89,23 @@ class Game:
 
         return self.__checked_king.color == self.__color_current_move
 
-    def undo_map(self):
+    def undo(self):
+        self.__moved_pieces.pop()
         self.invert_color_current_move()
         self.__map = self.__map_cvs.undo_map()
 
-    def redo_map(self):
-        self.invert_color_current_move()
+    def redo(self):
         self.__map = self.__map_cvs.redo_map()
+        self.__moved_pieces.append(
+            Map.get_last_move_vector(self.__map_cvs.previous_map(), self.map))
+        self.invert_color_current_move()
+
+    def detect_end_game(self):
+        pass
+
+    def on_castling_handler(self, color, is_short):
+        y = 0 if color is PieceColor.WHITE else 7
+        start_x = 7 if is_short else 0
+        end_x = 5 if is_short else 3
+        vector = Vector(Cell(start_x, y), Cell(end_x, y))
+        self.__map.drag(vector)

@@ -100,9 +100,9 @@ class GameBoard(Widget):
     def generate_message(self):
         message = ""
 
-        if self.game.king_is_checked:
-            message = "Check!"
-        elif self.game.is_finished:
+        if self.game.is_finished:
             message = "Mate!"
+        elif self.game.king_is_checked:
+            message = "Check!"
 
         return message

@@ -22,6 +22,7 @@ class AbstractValidatorsContainer:
             self._move_vector.start_cell)
 
         self.on_remove_piece_handler = None
+        self.on_castling_handler = None
 
     def is_valid(self):
         return self.allow_valid() and self.prohibit_valid()
@@ -51,3 +52,6 @@ class AbstractValidatorsContainer:
 
     def notify_game_remove_piece(self, piece_cell):
         self.on_remove_piece_handler(piece_cell)
+
+    def notify_game_castling(self, color, is_short):
+        self.on_castling_handler(color, is_short)
