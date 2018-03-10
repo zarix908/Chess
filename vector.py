@@ -10,6 +10,3 @@ class Vector:
     @property
     def y(self):
         return self.__y
-
-    def normalize(self):
-        return

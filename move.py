@@ -1,3 +1,6 @@
+import math
+
+
 class Move:
     def __init__(self, start_cell, end_cell):
         self.__start_cell = start_cell
@@ -18,6 +21,9 @@ class Move:
     @property
     def y(self):
         return self.__end_cell.y - self.__start_cell.y
+
+    def __len__(self):
+        return math.sqrt(self.x * self.x + self.y + self.y)
 
     def __eq__(self, other):
         return self.start_cell == other.start_cell \
