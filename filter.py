@@ -17,10 +17,12 @@ class Filter:
             moves = filter(
                 lambda move: not self.is_pawn_capture_empty(game_state, move,
                                                             last_move), moves)
+
         return moves
 
     def has_let(self, game_state, move):
-        if game_state.get(move.start_cell).type is PieceType.KNIGHT:
+        piece_type = game_state.get(move.start_cell).type
+        if piece_type is PieceType.KNIGHT:
             return False
 
         vector = Vector(np.sign(move.x), np.sign(move.y))
@@ -30,6 +32,10 @@ class Filter:
             if game_state.get(cell) is not None:
                 return True
             cell = Cell(cell.x + vector.x, cell.y + vector.y)
+
+        if piece_type is PieceType.PAWN and cell == move.end_cell:
+            if game_state.get(move.end_cell) is not None:
+                return True
 
         return False
 
@@ -51,19 +57,23 @@ class Filter:
         return not self.is_pass_capture(game_state, move, last_move)
 
     def is_pass_capture(self, game_state, move, last_move):
+        if last_move is None:
+            return False
+
         if game_state.get(last_move.end_cell).type is not PieceType.PAWN:
             return False
 
-        if len(last_move) != 2:
+        if last_move.length != 2:
             return False
 
         dx = last_move.end_cell.x - move.start_cell.x
         dy = last_move.end_cell.y - move.start_cell.y
 
-        if abs(dx) != 1 or dy != 0:
+        if dx != move.x or dy != 0:
             return False
 
-
+        self.on_pass_capture(last_move.end_cell)
+        return True
 
     def on_board(self, cell):
         return 0 <= cell.x < 8 and 0 <= cell.y < 8

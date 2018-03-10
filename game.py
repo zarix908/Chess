@@ -32,5 +32,5 @@ class Game:
     def get_last_move(self):
         return self.__moves[-1] if len(self.__moves) > 0 else None
 
-    def on_pass_capture(self):
+    def on_pass_capture(self, cell):
         pass

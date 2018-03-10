@@ -22,8 +22,9 @@ class Move:
     def y(self):
         return self.__end_cell.y - self.__start_cell.y
 
-    def __len__(self):
-        return math.sqrt(self.x * self.x + self.y + self.y)
+    @property
+    def length(self):
+        return math.sqrt(self.x * self.x + self.y * self.y)
 
     def __eq__(self, other):
         return self.start_cell == other.start_cell \
