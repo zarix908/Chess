@@ -18,6 +18,11 @@ class Filter:
                 lambda move: not self.is_pawn_capture_empty(game_state, move,
                                                             last_move), moves)
 
+        if piece_type is PieceType.KING:
+            moves = filter(
+                lambda move: not self.is_beaten_castling(game_state, move),
+                moves)
+
         return moves
 
     def has_let(self, game_state, move):
@@ -34,7 +39,7 @@ class Filter:
             cell = Cell(cell.x + vector.x, cell.y + vector.y)
 
         if piece_type is PieceType.PAWN and cell == move.end_cell:
-            if game_state.get(move.end_cell) is not None:
+            if game_state.get(move.end_cell) is not None and move.x == 0:
                 return True
 
         return False
@@ -74,6 +79,10 @@ class Filter:
 
         self.on_pass_capture(last_move.end_cell)
         return True
+
+    def is_beaten_castling(self, game_state, move):
+        if move.length == 1:
+            return False
 
     def on_board(self, cell):
         return 0 <= cell.x < 8 and 0 <= cell.y < 8

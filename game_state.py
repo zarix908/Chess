@@ -4,9 +4,12 @@ from piece import Piece
 
 
 class GameState:
+    """Immutable class"""
     SIZE = 8
 
     def __init__(self, old_state=None, move=None):
+        self.__pieces = {}
+
         self.__map = [[None for y in range(GameState.SIZE)]
                       for x in range(GameState.SIZE)]
 
@@ -14,6 +17,10 @@ class GameState:
             self.set_initial_state()
         else:
             self.generate_new_state(old_state, move)
+
+    def get_pieces(self, color):
+        return dict((piece, cell) for piece, cell in self.__pieces.items() if
+                    piece.color == color)
 
     def set_initial_state(self):
         self.add_pieces(PieceColor.WHITE)
@@ -28,12 +35,12 @@ class GameState:
                        PieceType.KNIGHT, PieceType.ROOK]
 
         for i in base_pieces:
-            self.__map[x][y] = Piece(i, color)
+            self.add_piece(Piece(i, color), x, y)
             x += 1
 
         y = 1 if color is PieceColor.WHITE else GameState.SIZE - 2
         for x in range(GameState.SIZE):
-            self.__map[x][y] = Piece(PieceType.PAWN, color)
+            self.add_piece(Piece(PieceType.PAWN, color), x, y)
 
     def get(self, cell):
         if cell is None:
@@ -53,9 +60,14 @@ class GameState:
                 if cell == move.start_cell:
                     self.__map[cell.x][cell.y] = None
                 elif cell == move.end_cell:
-                    self.__map[cell.x][cell.y] = old_state.get(move.start_cell)
+                    self.add_piece(old_state.get(move.start_cell), cell.x,
+                                   cell.y)
                 else:
-                    self.__map[cell.x][cell.y] = old_state.get(cell)
+                    self.add_piece(old_state.get(cell), cell.x, cell.y)
+
+    def add_piece(self, piece, x, y):
+        self.__map[x][y] = piece
+        self.__pieces[piece] = Cell(x, y)
 
     # TODO
     def __str__(self):
