@@ -63,8 +63,7 @@ class RootWindow(Widget):
         if active_piece is None:
             return
 
-        for move in self.__moves_getter.get_moves(self.__allotted_cell,
-                                                  active_piece.type):
+        for move in self.__game.get_possible_moves(self.__allotted_cell):
             x = move.end_cell.x
             y = move.end_cell.y
 
@@ -76,7 +75,7 @@ class RootWindow(Widget):
             x *= RootWindow.CELL_SIZE
             y *= RootWindow.CELL_SIZE
 
-            Rectangle(pos=(x, y), size=(RootWindow.CELL_SIZE,)*2)
+            Rectangle(pos=(x, y), size=(RootWindow.CELL_SIZE,) * 2)
 
     def draw_pieces_on_board(self):
         game_map = self.__game.get_current_state()

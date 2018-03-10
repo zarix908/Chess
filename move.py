@@ -3,10 +3,6 @@ class Move:
         self.__start_cell = start_cell
         self.__end_cell = end_cell
 
-    def init(self, start_cell, end_cell):
-        self.__start_cell = start_cell
-        self.__end_cell = end_cell
-
     @property
     def start_cell(self):
         return self.__start_cell
