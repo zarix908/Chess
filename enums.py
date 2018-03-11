@@ -20,6 +20,10 @@ class PieceColor(Enum):
     BLACK = 0
     WHITE = 1
 
+    @staticmethod
+    def invert(color):
+        return PieceColor((int(color) + 1) % 2)
+
     def __str__(self):
         return self._name_
 

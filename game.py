@@ -1,4 +1,5 @@
-from filter import Filter
+from post_filter import PostFilter
+from predictive_filter import PredictiveFilter
 from game_state import GameState
 from moves_getter import MovesGetter
 
@@ -9,8 +10,9 @@ class Game:
         self.__moves = []
 
         self.__moves_getter = MovesGetter()
-        self.__filter = Filter()
-        self.__filter.on_pass_capture = self.on_pass_capture
+        self.__predict_filter = PredictiveFilter()
+        self.__post_filter = PostFilter()
+        self.__predict_filter.on_pass_capture = self.on_pass_capture
 
     def get_current_state(self):
         return self.__current_state
@@ -19,14 +21,18 @@ class Game:
         moves = self.get_possible_moves(move.start_cell)
 
         if move in moves:
-            self.__current_state = GameState(self.__current_state, move)
-            self.__moves.append(move)
+            new_state = GameState(self.__current_state, move)
+            new_state = self.__post_filter.filter(new_state, move)
+
+            if new_state is not None:
+                self.__current_state = new_state
+                self.__moves.append(move)
 
     def get_possible_moves(self, cell):
         piece = self.__current_state.get(cell)
         moves = self.__moves_getter.get_moves(cell, piece.type, piece.color)
-        moves = self.__filter.filter(self.__current_state, moves,
-                                     self.get_last_move(), piece.type)
+        moves = self.__predict_filter.filter(self.__current_state, moves,
+                                             self.get_last_move(), piece.type)
         return moves
 
     def get_last_move(self):

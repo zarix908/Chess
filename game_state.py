@@ -63,7 +63,9 @@ class GameState:
                     self.add_piece(old_state.get(move.start_cell), cell.x,
                                    cell.y)
                 else:
-                    self.add_piece(old_state.get(cell), cell.x, cell.y)
+                    piece = old_state.get(cell)
+                    if piece is not None:
+                        self.add_piece(piece, cell.x, cell.y)
 
     def add_piece(self, piece, x, y):
         self.__map[x][y] = piece

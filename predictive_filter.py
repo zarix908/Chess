@@ -4,7 +4,7 @@ from vector import Vector
 import numpy as np
 
 
-class Filter:
+class PredictiveFilter:
     def __init__(self):
         self.on_pass_capture = None
 
