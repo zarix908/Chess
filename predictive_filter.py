@@ -7,6 +7,7 @@ import numpy as np
 class PredictiveFilter:
     def __init__(self):
         self.on_pass_capture = None
+        self.on_castling = None
 
     def filter(self, game_state, moves, last_move, piece_type):
         moves = filter(lambda move: not self.has_let(game_state, move), moves)
@@ -20,7 +21,7 @@ class PredictiveFilter:
 
         if piece_type is PieceType.KING:
             moves = filter(
-                lambda move: not self.is_beaten_castling(game_state, move),
+                lambda move: not self.incorrect_castling(game_state, move),
                 moves)
 
         return moves
@@ -80,9 +81,24 @@ class PredictiveFilter:
         self.on_pass_capture(last_move.end_cell)
         return True
 
-    def is_beaten_castling(self, game_state, move):
+    def incorrect_castling(self, game_state, move):
         if move.length == 1:
             return False
+
+        moved_pieces = game_state.get_moved_pieces()
+
+        king = game_state.get(move.start_cell)
+        if king in moved_pieces:
+            return True
+
+        y = move.start_cell.y
+
+        x = 7 if move.length == 2 else 0
+        rook = game_state.get(Cell(x, y))
+        if rook is None or rook in moved_pieces:
+            return True
+
+        return False
 
     def on_board(self, cell):
         return 0 <= cell.x < 8 and 0 <= cell.y < 8

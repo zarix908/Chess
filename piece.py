@@ -1,14 +1,21 @@
 class Piece:
     ID = 0
 
-    def __init__(self, type, color):
-        self.__id = Piece.ID
-        Piece.ID += 1
+    def __init__(self, type, color, id=None):
+        if id is None:
+            self.__id = Piece.ID
+            Piece.ID += 1
+        else:
+            self.__id = id
 
         self.__type = type
         self.__color = color
         self.__asset_path = "assets/" + str(self.__type) + "_" + str(
             self.__color) + ".png"
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def type(self):

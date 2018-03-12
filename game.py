@@ -23,10 +23,7 @@ class Game:
 
         if move in moves:
             new_state = GameState(self.__current_state, move)
-            new_state = self.__post_filter.filter(new_state, move)
-
-            if new_state is not None:
-                self.change_game_state(new_state, move)
+            self.change_game_state(new_state, move)
 
     def change_game_state(self, new_state, last_move):
         self.__current_state = new_state

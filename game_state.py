@@ -9,6 +9,7 @@ class GameState:
 
     def __init__(self, old_state=None, move=None):
         self.__pieces = {}
+        self.__moved_pieces = set()
 
         self.__map = [[None for y in range(GameState.SIZE)]
                       for x in range(GameState.SIZE)]
@@ -21,6 +22,9 @@ class GameState:
     def get_pieces(self, color):
         return dict((piece, cell) for piece, cell in self.__pieces.items() if
                     piece.color == color)
+
+    def get_moved_pieces(self):
+        return self.__moved_pieces
 
     def set_initial_state(self):
         self.add_pieces(PieceColor.WHITE)
@@ -50,9 +54,13 @@ class GameState:
             return None
 
         piece = self.__map[cell.x][cell.y]
-        return None if piece is None else Piece(piece.type, piece.color)
+        return None if piece is None else Piece(piece.type, piece.color,
+                                                piece.id)
 
     def generate_new_state(self, old_state, move):
+        piece = old_state.get(move.start_cell)
+        self.__moved_pieces.add(piece)
+
         for x in range(GameState.SIZE):
             for y in range(GameState.SIZE):
                 cell = Cell(x, y)
