@@ -72,6 +72,7 @@ class GameState:
                     self.add_piece(piece, cell.x, cell.y)
 
         self.complete_castling(old_state, move)
+        self.complete_pass_capture(old_state, move)
 
     def add_piece(self, piece, x, y):
         self.__map[x][y] = piece
@@ -86,6 +87,15 @@ class GameState:
             y = 0 if piece.color is PieceColor.WHITE else 7
             self.add_piece(None, x, y)
             self.add_piece(Piece(PieceType.ROOK, piece.color), new_x, y)
+
+    def complete_pass_capture(self, old_state, move):
+        piece = old_state.get(move.start_cell)
+
+        if piece.type is not PieceType.PAWN or move.x == 0:
+            return
+
+        if old_state.get(move.end_cell) is None:
+            self.add_piece(None, move.end_cell.x, move.end_cell.y - 1)
 
     # TODO
     def __str__(self):

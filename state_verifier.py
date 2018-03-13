@@ -3,13 +3,13 @@ from cell import Cell
 from enums import PieceType, PieceColor
 
 
-class PostFilter:
+class StateVerifier:
     def __init__(self):
         self.__beat_verifier = BeatVerifier()
 
-    def filter(self, game_state, move):
-        return self.king_checked_after_move(game_state, move) and not \
-            self.is_beaten_castling(game_state, move)
+    def verify(self, game_state, move):
+        return not (self.king_checked_after_move(game_state, move) or
+                    self.is_beaten_castling(game_state, move))
 
     def king_checked_after_move(self, game_state, move):
         piece = game_state.get(move.end_cell)
@@ -25,7 +25,7 @@ class PostFilter:
         king_checked = self.__beat_verifier.is_beaten_cell(game_state,
                                                            evil_color,
                                                            self_king_cell)
-        return game_state if not king_checked else None
+        return king_checked
 
     def is_beaten_castling(self, game_state, move):
         moved_piece = game_state.get(move.end_cell)

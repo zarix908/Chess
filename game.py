@@ -1,5 +1,5 @@
 from enums import PieceType
-from post_filter import PostFilter
+from state_verifier import StateVerifier
 from predictive_filter import PredictiveFilter
 from game_state import GameState
 from moves_getter import MovesGetter
@@ -12,11 +12,9 @@ class Game:
         self.__all_possible_moves = {}
 
         self.__moves_getter = MovesGetter()
-        self.__post_filter = PostFilter()
+        self.__state_verifier = StateVerifier()
 
         self.__predict_filter = PredictiveFilter()
-        self.__predict_filter.on_pass_capture = self.on_pass_capture
-        self.__predict_filter.on_castling = self.on_castling
 
     def get_current_state(self):
         return self.__current_state
@@ -55,16 +53,10 @@ class Game:
 
     def will_correct_state_after_move(self, move):
         game_state = GameState(self.__current_state, move)
-        return self.__post_filter.filter(game_state, move) is not None
+        return self.__state_verifier.verify(game_state, move)
 
     def get_last_move(self):
         return self.__past_moves[-1] if len(self.__past_moves) > 0 else None
-
-    def on_pass_capture(self, cell):
-        pass
-
-    def on_castling(self):
-        pass
 
     def castling_unavailable(self, move):
         piece = self.__current_state.get(move.start_cell)
