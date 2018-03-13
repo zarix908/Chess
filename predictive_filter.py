@@ -10,6 +10,7 @@ class PredictiveFilter:
         self.on_castling = None
 
     def filter(self, game_state, moves, last_move, piece_type):
+        a = list(moves)
         moves = filter(lambda move: not self.has_let(game_state, move), moves)
         moves = filter(lambda move: not self.is_capture_self(game_state, move),
                        moves)
@@ -82,7 +83,7 @@ class PredictiveFilter:
         return True
 
     def incorrect_castling(self, game_state, move):
-        if move.length == 1:
+        if move.length != 2:
             return False
 
         castling_type = "short" if move.x == 2 else "long"

@@ -32,7 +32,7 @@ class PostFilter:
         if moved_piece.type is not PieceType.KING:
             return False
 
-        if move.length == 1:
+        if move.length != 2:
             return False
 
         piece = game_state.get(move.end_cell)
