@@ -29,3 +29,8 @@ class PieceColor(Enum):
 
     def __int__(self):
         return self._value_
+
+
+class Flag(Enum):
+    SHORT_CASTLING = 0
+    LONG_CASTLING = 1

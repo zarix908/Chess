@@ -8,9 +8,10 @@ class GameState:
     SIZE = 8
 
     def __init__(self, old_state=None, move=None):
-        self.__pieces = {}
-        self.__moved_pieces = set()
+        self.long_castling_available = True
+        self.short_castling_available = True
 
+        self.__pieces = {}
         self.__map = [[None for y in range(GameState.SIZE)]
                       for x in range(GameState.SIZE)]
 
@@ -22,9 +23,6 @@ class GameState:
     def get_pieces(self, color):
         return dict((piece, cell) for piece, cell in self.__pieces.items() if
                     piece.color == color)
-
-    def get_moved_pieces(self):
-        return self.__moved_pieces
 
     def set_initial_state(self):
         self.add_pieces(PieceColor.WHITE)
@@ -54,30 +52,40 @@ class GameState:
             return None
 
         piece = self.__map[cell.x][cell.y]
-        return None if piece is None else Piece(piece.type, piece.color,
-                                                piece.id)
+        return None if piece is None else Piece(piece.type, piece.color)
 
     def generate_new_state(self, old_state, move):
-        piece = old_state.get(move.start_cell)
-        self.__moved_pieces.add(piece)
+        self.short_castling_available = old_state.short_castling_available
+        self.long_castling_available = old_state.long_castling_available
 
         for x in range(GameState.SIZE):
             for y in range(GameState.SIZE):
                 cell = Cell(x, y)
 
                 if cell == move.start_cell:
-                    self.__map[cell.x][cell.y] = None
+                    self.add_piece(None, x, y)
                 elif cell == move.end_cell:
                     self.add_piece(old_state.get(move.start_cell), cell.x,
                                    cell.y)
                 else:
                     piece = old_state.get(cell)
-                    if piece is not None:
-                        self.add_piece(piece, cell.x, cell.y)
+                    self.add_piece(piece, cell.x, cell.y)
+
+        self.complete_castling(old_state, move)
 
     def add_piece(self, piece, x, y):
         self.__map[x][y] = piece
-        self.__pieces[piece] = Cell(x, y)
+        if piece is not None:
+            self.__pieces[piece] = Cell(x, y)
+
+    def complete_castling(self, old_state, move):
+        piece = old_state.get(move.start_cell)
+        if piece.type is PieceType.KING and move.length == 2:
+            x = 7 if move.x == 2 else 0
+            new_x = 5 if move.x == 2 else 3
+            y = 0 if piece.color is PieceColor.WHITE else 7
+            self.add_piece(None, x, y)
+            self.add_piece(Piece(PieceType.ROOK, piece.color), new_x, y)
 
     # TODO
     def __str__(self):

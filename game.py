@@ -1,3 +1,4 @@
+from enums import PieceType
 from post_filter import PostFilter
 from predictive_filter import PredictiveFilter
 from game_state import GameState
@@ -11,9 +12,11 @@ class Game:
         self.__all_possible_moves = {}
 
         self.__moves_getter = MovesGetter()
-        self.__predict_filter = PredictiveFilter()
         self.__post_filter = PostFilter()
+
+        self.__predict_filter = PredictiveFilter()
         self.__predict_filter.on_pass_capture = self.on_pass_capture
+        self.__predict_filter.on_castling = self.on_castling
 
     def get_current_state(self):
         return self.__current_state
@@ -22,6 +25,8 @@ class Game:
         moves = self.get_possible_moves(move.start_cell)
 
         if move in moves:
+            self.castling_unavailable(move)
+
             new_state = GameState(self.__current_state, move)
             self.change_game_state(new_state, move)
 
@@ -57,3 +62,18 @@ class Game:
 
     def on_pass_capture(self, cell):
         pass
+
+    def on_castling(self):
+        pass
+
+    def castling_unavailable(self, move):
+        piece = self.__current_state.get(move.start_cell)
+        if piece.type is PieceType.ROOK:
+            if move.start_cell.x == 0:
+                self.__current_state.long_castling_available = False
+            elif move.start_cell.x == 7:
+                self.__current_state.short_castling_available = False
+
+        if piece.type is PieceType.KING:
+            self.__current_state.short_castling_available = False
+            self.__current_state.long_castling_available = False

@@ -1,21 +1,13 @@
+import uuid
+
+
 class Piece:
-    ID = 0
-
-    def __init__(self, type, color, id=None):
-        if id is None:
-            self.__id = Piece.ID
-            Piece.ID += 1
-        else:
-            self.__id = id
-
+    def __init__(self, type, color):
+        self.__hash = uuid.uuid4().int
         self.__type = type
         self.__color = color
         self.__asset_path = "assets/" + str(self.__type) + "_" + str(
             self.__color) + ".png"
-
-    @property
-    def id(self):
-        return self.__id
 
     @property
     def type(self):
@@ -36,4 +28,4 @@ class Piece:
         return self.__type == other.__type and self.__color == other.__color
 
     def __hash__(self):
-        return self.__id
+        return self.__hash

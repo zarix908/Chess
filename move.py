@@ -1,11 +1,13 @@
 import math
-import traceback
 
 
 class Move:
     def __init__(self, start_cell, end_cell):
         self.__start_cell = start_cell
         self.__end_cell = end_cell
+
+        self.cell_pass_capture = None
+        self.castling = None
 
     @property
     def start_cell(self):

@@ -85,19 +85,13 @@ class PredictiveFilter:
         if move.length == 1:
             return False
 
-        moved_pieces = game_state.get_moved_pieces()
-
-        king = game_state.get(move.start_cell)
-        if king in moved_pieces:
+        castling_type = "short" if move.x == 2 else "long"
+        castling_available = eval(
+            "game_state." + castling_type + "_castling_available")
+        if not castling_available:
             return True
 
-        y = move.start_cell.y
-
-        x = 7 if move.length == 2 else 0
-        rook = game_state.get(Cell(x, y))
-        if rook is None or rook in moved_pieces:
-            return True
-
+        self.on_castling()
         return False
 
     def on_board(self, cell):

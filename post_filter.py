@@ -40,7 +40,7 @@ class PostFilter:
 
         y = move.start_cell.y
         cells = [Cell(i, y) for i in range(4, 7)] if move.length == 2 else [
-            Cell(j, y) for j in reversed(range(1, 5))]
+            Cell(j, y) for j in reversed(range(2, 5))]
 
         for cell in cells:
             if self.__beat_verifier.is_beaten_cell(game_state, evil_color,
