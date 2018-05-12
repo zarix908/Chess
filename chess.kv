@@ -53,3 +53,25 @@
             id: start
             text: "Start"
             on_press: root.on_start_button_press()
+
+<GameWidget>:
+    game_board_widget: game_board
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.size
+
+        BoxLayout:
+            size_hint_y: 0.1
+            size_hint_x: 0.3
+            orientation: "horizontal"
+
+            Button:
+                text: "save game"
+
+            Button:
+                text: "open game"
+
+        Widget:
+            id: game_board
+            size_hint_y: 0.9

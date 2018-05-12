@@ -7,6 +7,7 @@ from controller.controller import Controller
 from controller.player import Player
 from enums import PieceColor, GameMode, PlayerType
 from model.game import Game
+from view.game_board_widget import GameBoardWidget
 from view.game_widget import GameWidget
 
 
@@ -43,16 +44,22 @@ class MenuWidget(Widget):
 
         players = [first_player, second_player]
 
-        root_window = GameWidget(game)
+        game_board = GameBoardWidget(game)
         for player in players:
             if player.type == PlayerType.HUMAN:
-                root_window.move_receive_from_ui.append(player.move_receive_from_ui_handler)
+                game_board.move_receive_from_ui.append(player.move_receive_from_ui_handler)
 
         if first_player.type == PlayerType.AI:
             first_player.move_complete_event(PieceColor.BLACK)
 
-        Clock.schedule_interval(lambda delta_time: root_window.update(),
+        Clock.schedule_interval(lambda delta_time: game_board.update(),
                                 0.03)
 
         self.clear_widgets()
-        self.add_widget(root_window)
+
+        game_widget = GameWidget()
+        size = (game_board.width, game_board.height + 50)
+        game_widget.size = size
+        Window.size = size
+        game_widget.set_game_board(game_board)
+        self.add_widget(game_widget)
