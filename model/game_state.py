@@ -5,6 +5,7 @@ from model.piece import Piece
 
 class GameState:
     """Immutable class"""
+
     SIZE = 8
 
     def __init__(self, old_state=None, move=None):

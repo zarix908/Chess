@@ -68,10 +68,45 @@
 
             Button:
                 text: "save game"
+                on_press: root.on_save_game_press()
 
             Button:
                 text: "open game"
+                on_press: root.on_load_game_press()
 
         Widget:
             id: game_board
             size_hint_y: 0.9
+
+<SaveGameDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            TextInput:
+                id: file_name_input
+
+            Button:
+                text: "Save"
+                on_release: root.save(file_name_input.text)
+
+<LoadGameDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            TextInput:
+                id: file_name_input
+
+            Button:
+                text: "Load"
+                on_release: root.load(file_name_input.text)
+

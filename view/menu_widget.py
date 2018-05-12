@@ -57,7 +57,7 @@ class MenuWidget(Widget):
 
         self.clear_widgets()
 
-        game_widget = GameWidget()
+        game_widget = GameWidget(game)
         size = (game_board.width, game_board.height + 50)
         game_widget.size = size
         Window.size = size

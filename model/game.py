@@ -16,7 +16,11 @@ class Game:
 
         self.__predict_filter = PredictiveFilter()
 
-        self.current_move_color = PieceColor.WHITE
+        self.__current_move_color = PieceColor.WHITE
+
+    @property
+    def current_move_color(self):
+        return self.__current_move_color
 
     def get_current_state(self):
         return self.__current_state
@@ -29,6 +33,7 @@ class Game:
 
             new_state = GameState(self.__current_state, move)
             self.change_game_state(new_state, move)
+            self.__current_move_color = PieceColor.invert(self.__current_move_color)
             return True
 
         return False
@@ -54,7 +59,7 @@ class Game:
         moves = filter(lambda move: self.will_correct_state_after_move(move),
                        moves)
 
-        moves = filter(lambda move: self.__current_state.get(move.start_cell).color == self.current_move_color,
+        moves = filter(lambda move: self.__current_state.get(move.start_cell).color == self.__current_move_color,
                        moves)
 
         self.__all_possible_moves[cell] = list(moves)
