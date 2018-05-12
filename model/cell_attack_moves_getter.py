@@ -1,10 +1,10 @@
 from itertools import chain
 
+from model.predictive_filter import PredictiveFilter
 from moves_getter import MovesGetter
-from predictive_filter import PredictiveFilter
 
 
-class AttackingMovesGetter:
+class CellAttackMovesGetter:
     def __init__(self):
         self.__moves_getter = MovesGetter()
         self.__filter = PredictiveFilter()

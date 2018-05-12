@@ -1,6 +1,6 @@
 from cell import Cell
 from enums import PieceType, PieceColor
-from piece import Piece
+from model.piece import Piece
 
 
 class GameState:
@@ -95,7 +95,7 @@ class GameState:
             return
 
         if old_state.get(move.end_cell) is None:
-            self.add_piece(None, move.end_cell.x, move.end_cell.y - 1)
+            self.add_piece(None, move.end_cell.x, move.end_cell.y + (1 if piece.color == PieceColor.BLACK else -1))
 
     # TODO
     def __str__(self):

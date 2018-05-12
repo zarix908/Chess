@@ -1,0 +1,55 @@
+<MenuWidget>:
+    start_button: start
+    human_vs_human_check_box: human_vs_human
+    human_vs_ai_check_box: human_vs_ai
+    ai_vs_human_check_box: ai_vs_human
+
+    size: root.size
+
+    BoxLayout:
+        size: root.size
+        orientation: "vertical"
+
+        BoxLayout:
+            orientation: "horizontal"
+            size: root.size
+
+            Label:
+                text: "human vs human"
+                size_hint_x: 0.8
+
+            CheckBox:
+                id: human_vs_human
+                group: "mode"
+                size_hint_x: 0.2
+
+        BoxLayout:
+            size: root.size
+            orientation: "horizontal"
+
+            Label:
+                text: "AI vs human"
+                size_hint_x: 0.8
+
+            CheckBox:
+                id: ai_vs_human
+                group: "mode"
+                size_hint_x: 0.2
+
+        BoxLayout:
+            size: root.size
+            orientation: "horizontal"
+
+            Label:
+                text: "human vs AI"
+                size_hint_x: 0.8
+
+            CheckBox:
+                id: human_vs_ai
+                group: "mode"
+                size_hint_x: 0.2
+
+        Button:
+            id: start
+            text: "Start"
+            on_press: root.on_start_button_press()

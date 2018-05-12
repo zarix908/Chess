@@ -1,7 +1,8 @@
+import numpy as np
+
 from cell import Cell
 from enums import PieceType
-from vector import Vector
-import numpy as np
+from model.vector import Vector
 
 
 class PredictiveFilter:

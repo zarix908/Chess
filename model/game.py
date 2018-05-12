@@ -1,7 +1,7 @@
-from enums import PieceType
-from state_verifier import StateVerifier
-from predictive_filter import PredictiveFilter
-from game_state import GameState
+from enums import PieceType, PieceColor
+from model.game_state import GameState
+from model.predictive_filter import PredictiveFilter
+from model.state_verifier import StateVerifier
 from moves_getter import MovesGetter
 
 
@@ -16,10 +16,12 @@ class Game:
 
         self.__predict_filter = PredictiveFilter()
 
+        self.current_move_color = PieceColor.WHITE
+
     def get_current_state(self):
         return self.__current_state
 
-    def make_move(self, move):
+    def try_make_move(self, move):
         moves = self.get_possible_moves(move.start_cell)
 
         if move in moves:
@@ -27,6 +29,9 @@ class Game:
 
             new_state = GameState(self.__current_state, move)
             self.change_game_state(new_state, move)
+            return True
+
+        return False
 
     def change_game_state(self, new_state, last_move):
         self.__current_state = new_state
@@ -47,6 +52,9 @@ class Game:
                                              self.get_last_move(), piece.type)
 
         moves = filter(lambda move: self.will_correct_state_after_move(move),
+                       moves)
+
+        moves = filter(lambda move: self.__current_state.get(move.start_cell).color == self.current_move_color,
                        moves)
 
         self.__all_possible_moves[cell] = list(moves)

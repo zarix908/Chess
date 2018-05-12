@@ -2,20 +2,21 @@ from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle, Line
 from kivy.uix.widget import Widget
+
 from cell import Cell
-from game_state import GameState
+from model.game_state import GameState
 from move import Move
 from moves_getter import MovesGetter
 
 
-class RootWindow(Widget):
+class GameWidget(Widget):
     CELL_SIZE = 70
     PIECE_SIZE = 60
 
     def __init__(self, game, **kwargs):
         super().__init__(**kwargs)
 
-        side = GameState.SIZE * RootWindow.CELL_SIZE
+        side = GameState.SIZE * GameWidget.CELL_SIZE
         size = (side, side)
         Window.size = self.size = size
 
@@ -26,6 +27,7 @@ class RootWindow(Widget):
 
         self.undo_map_available_handler = None
         self.redo_map_available_handler = None
+        self.move_receive_from_ui = []
 
     def update(self):
         with self.canvas:
@@ -46,13 +48,13 @@ class RootWindow(Widget):
             return
 
         Color(1, 0, 0, 1)
-        x *= RootWindow.CELL_SIZE
-        y *= RootWindow.CELL_SIZE
+        x *= GameWidget.CELL_SIZE
+        y *= GameWidget.CELL_SIZE
 
         points = [x, y,
-                  x + RootWindow.CELL_SIZE, y,
-                  x + RootWindow.CELL_SIZE, y + RootWindow.CELL_SIZE,
-                  x, y + RootWindow.CELL_SIZE,
+                  x + GameWidget.CELL_SIZE, y,
+                  x + GameWidget.CELL_SIZE, y + GameWidget.CELL_SIZE,
+                  x, y + GameWidget.CELL_SIZE,
                   x, y]
 
         Line(points=points, width=2)
@@ -72,10 +74,10 @@ class RootWindow(Widget):
 
             Color(0.4, 0.9, 0.4, 0.4)
 
-            x *= RootWindow.CELL_SIZE
-            y *= RootWindow.CELL_SIZE
+            x *= GameWidget.CELL_SIZE
+            y *= GameWidget.CELL_SIZE
 
-            Rectangle(pos=(x, y), size=(RootWindow.CELL_SIZE,) * 2)
+            Rectangle(pos=(x, y), size=(GameWidget.CELL_SIZE,) * 2)
 
     def draw_pieces_on_board(self):
         game_map = self.__game.get_current_state()
@@ -83,20 +85,20 @@ class RootWindow(Widget):
         for x in range(8):
             for y in range(8):
                 piece = game_map.get(Cell(x, y))
-                offset = (RootWindow.CELL_SIZE - RootWindow.PIECE_SIZE) / 2
+                offset = (GameWidget.CELL_SIZE - GameWidget.PIECE_SIZE) / 2
 
                 if piece is not None:
-                    Rectangle(pos=(x * RootWindow.CELL_SIZE + offset,
-                                   y * RootWindow.CELL_SIZE + offset),
-                              size=(RootWindow.PIECE_SIZE,) * 2,
+                    Rectangle(pos=(x * GameWidget.CELL_SIZE + offset,
+                                   y * GameWidget.CELL_SIZE + offset),
+                              size=(GameWidget.PIECE_SIZE,) * 2,
                               source=piece.asset_path)
 
     def on_touch_down(self, touch):
         if touch.device != 'mouse':
             return
 
-        clicked_cell = Cell(int(touch.x // RootWindow.CELL_SIZE),
-                            int(touch.y // RootWindow.CELL_SIZE))
+        clicked_cell = Cell(int(touch.x // GameWidget.CELL_SIZE),
+                            int(touch.y // GameWidget.CELL_SIZE))
 
         if self.__allotted_cell is None:
             self.__allotted_cell = clicked_cell
@@ -106,7 +108,9 @@ class RootWindow(Widget):
             if self.__game.get_current_state().get(
                     Cell(self.__allotted_cell.x,
                          self.__allotted_cell.y)) is not None:
-                self.__game.make_move(Move(self.__allotted_cell, clicked_cell))
+
+                for func in self.move_receive_from_ui:
+                    func(Move(self.__allotted_cell, clicked_cell))
 
             self.__allotted_cell = clicked_cell
         else:

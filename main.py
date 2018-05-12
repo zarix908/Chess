@@ -1,24 +1,15 @@
 from kivy import Config
-from kivy.clock import Clock
-
-from game import Game
-from root_window import RootWindow
+from view.menu_widget import MenuWidget
 
 Config.set('graphics', 'resizable', False)
 
-from kivy.app import App
+import kivy.app
 
 
-class Chess(App):
+class Chess(kivy.app.App):
     def build(self):
-        game = Game()
-        root_window = RootWindow(game)
-        Clock.schedule_interval(lambda delta_time: root_window.update(),
-                                0.03)
-        return root_window
+        return MenuWidget()
 
 
 if __name__ == '__main__':
     Chess().run()
-
-

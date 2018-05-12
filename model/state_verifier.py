@@ -1,11 +1,11 @@
-from beat_verifier import BeatVerifier
 from cell import Cell
 from enums import PieceType, PieceColor
+from model.beat_verifier import CellBeatVerifier
 
 
 class StateVerifier:
     def __init__(self):
-        self.__beat_verifier = BeatVerifier()
+        self.__beat_verifier = CellBeatVerifier()
 
     def verify(self, game_state, move):
         return not (self.king_checked_after_move(game_state, move) or
